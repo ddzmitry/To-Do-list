@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+
+<html lang="en-us">
+
+  <head>
+
+    <meta charset="UTF-8">
+    <title>To Do App!</title>
+
+    <style>
+      #todo-item {
+        font-weight: 700;
+        font-size: 2em;
+      }
+    </style>
+  </head>
+
+  <body>
+
+    <!-- Title -->
+    <h1>My To Do's!</h1>
+
+    <!-- Input Form -->
+    <form>
+      <span id="todo-item">To Do Item: <input id="to-do" type="text" ><input id="add-to-do" value="Add Item" type="submit"></span>
+    </form>
+
+    <hr>
+
+    <!-- To-Do List -->
+    <div id="to-dos"></div>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+
+    <!-- Script -->
+
+    <script>
+      
+
+      // Create an initial toDoCount variable
+var toDoCount = 0;
+
+var arrayoftoDos = [];
+var arrayofLocals = [];
+//  On Click event associated with the add-to-do function
+$("#add-to-do").on("click", function(event) {
+  event.preventDefault();
+
+  // Get the to-do "value" from the textbox and store it a variable
+  var toDoTask = $("#to-do").val().trim();
+
+  if (toDoTask == "") {
+
+    return alert("Enter something!");
+  }
+
+
+  // Create a new variable that will hold a "<p>" tag.
+  // Then give it an ID in the following form:
+  // "item-4" or "item-3" or "item-99", where the number is equal to toDoCount.
+  // Then append the to-do "value" as text to this <p> element.
+  var toDoItem = $("<p>");
+
+  toDoItem.attr("id", "item-" + toDoCount);
+  toDoItem.append(" " + toDoTask);
+
+  // Create a button with unique identifiers based on what number it is in the list. Again use jQuery to do this.
+  // Give your button a data attribute called data-to-do and a class called "checkbox".
+  // Lastly append the letter X inside.
+
+  var toDoClose = $("<button>");
+
+  toDoClose.attr("data-to-do", toDoCount);
+  toDoClose.addClass("checkbox");
+  toDoClose.append("✓");
+
+  // Append the button to the to do item
+  toDoItem = toDoItem.prepend(toDoClose);
+
+  // Add the button and to do item to the to-dos div
+  $("#to-dos").append(toDoItem);
+
+  // _________________________________________________________________________________________________________>
+  arrayoftoDos.push(toDoTask) // All right here we add to our array of local storage!Out ToDoTasks (line 49)
+  localStorage.setItem(`array`, JSON.stringify(arrayoftoDos)); // make it into the string
+
+  $("#to-do").val("");
+
+  toDoCount++;
+
+  console.log(arrayoftoDos); //we can see our array populating
+});
+
+
+var arrayofLocals = JSON.parse(localStorage.getItem(`array`)) // this is our array of todos(line.78) parsing back to JSON object!
+
+function addDefault() {
+  //Here we repeating the same function like we do once we click on add  Item (line 45) but we run it automaticly when page loaded.
+  //think of document onload in Jquery!
+
+  arrayofLocals.forEach(function(toDoTask) {
+
+    var toDoItem = $("<p>");
+
+    toDoItem.attr("id", "item-" + toDoCount);
+    toDoItem.append(" " + toDoTask);
+    var toDoClose = $("<button>");
+
+    toDoClose.attr("data-to-do", toDoCount);
+    toDoClose.addClass("checkbox");
+    toDoClose.append("✓");
+
+
+    toDoItem = toDoItem.prepend(toDoClose);
+
+
+    $("#to-dos").append(toDoItem);
+
+    arrayoftoDos.push(toDoTask); // we have to reset our array and bring back tasks  of toDos because it is empty for THIS page. 
+
+
+    toDoCount++ // this updates out count as well as data to be able to move.
+    console.log(toDoCount);
+    console.log(toDoTask);
+  });
+
+
+}
+
+if (jQuery.isEmptyObject(arrayofLocals)) { // if it  our arrayofLocals (line 90)is empty we do nothing 
+
+
+} else( // if it has local storage memory in it then we will add our buttons
+
+  addDefault()
+)
+
+// addDefault() // we use our local storage array(line 89) to activate this function(line 92) When page loaded! 
+
+$(document.body).on("click", ".checkbox", function() {
+
+  console.log(arrayoftoDos); //checking our array that on localStorage
+
+  var toDoNumber = $(this).attr("data-to-do"); //this is a number of toDocount !
+
+  console.log(toDoNumber) // 
+  for (i in arrayoftoDos) {
+
+    if (i == toDoNumber) { // number of index in Array matching with a number of checkbox
+
+      arrayoftoDos.splice(i, 1) // it uses our array and taking away at indexOF(toDonumber!) 
+
+
+
+      console.log("I match"); //make sure it does matches
+    }
+    // console.log(arrayoftoDos)
+
+    localStorage.setItem(`array`, JSON.stringify(arrayoftoDos)) // and we update our local storage with new array!
+  }
+
+  console.log(arrayoftoDos) //our updated array
+  $("#item-" + toDoNumber).remove();
+
+});
+    </script>
+
+  </body>
+
+</html>
